@@ -2,4 +2,7 @@ server:
   port: 9010
 
 upload:
-  location: /tmp
+  location: /data/raw
+
+model:
+  location: /data/model
