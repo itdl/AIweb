@@ -4,6 +4,7 @@ public class ModelDTO extends BaseDTO{
 
     private String inputFile;
     private String modelName;
+    private String output;
 
     public String getInputFile() {
         return inputFile;
@@ -19,5 +20,13 @@ public class ModelDTO extends BaseDTO{
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
     }
 }
