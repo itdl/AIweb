@@ -3,6 +3,7 @@ server:
 
 upload:
   location: /data/web/raw
+  kalocation: /data/web/ka
 
 model:
   location: /data/web/json
