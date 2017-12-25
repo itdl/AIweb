@@ -5,16 +5,21 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.nio.file.Path;
 import java.util.stream.Stream;
+import java.net.MalformedURLException;
+
 import org.springframework.util.StringUtils;
+import org.springframework.core.io.UrlResource;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class UploadServiceImpl implements UploadService{
+public class UploadServiceImpl implements UploadService {
 
     private final Path rootLocation;
 
@@ -27,8 +32,7 @@ public class UploadServiceImpl implements UploadService{
     public void init() {
         try {
             Files.createDirectories(rootLocation);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UploadException("Could not initialize directory", e);
         }
     }
@@ -48,8 +52,7 @@ public class UploadServiceImpl implements UploadService{
             }
             Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
                     StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UploadException("Failed to store file " + filename, e);
         }
     }
@@ -66,7 +69,19 @@ public class UploadServiceImpl implements UploadService{
 
     @Override
     public Resource loadAsResource(String filename) {
-        return null;
+        try {
+            Path file = this.rootLocation.resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new UploadFileNotFoundException(
+                        "Could not read file: " + filename);
+
+            }
+        } catch (MalformedURLException e) {
+            throw new UploadFileNotFoundException("Could not read file: " + filename, e);
+        }
     }
 
     @Override
