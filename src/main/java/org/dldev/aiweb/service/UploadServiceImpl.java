@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 import java.net.MalformedURLException;
-
+import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.core.io.UrlResource;
 
@@ -86,6 +86,11 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     public void deleteAll() {
+        FileSystemUtils.deleteRecursively(this.rootLocation.toFile());
+    }
 
+    @Override
+    public void delete(String filename) {
+        FileSystemUtils.deleteRecursively(this.rootLocation.resolve(filename).toFile());
     }
 }
