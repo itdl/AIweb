@@ -17,4 +17,9 @@ public class ModelController {
     public ModelDTO runModel(@RequestBody ModelDTO modelDTO) {
         return modelService.run(modelDTO);
     }
+
+    @PostMapping("/model/run/skin")
+    public ModelDTO runSkinModel(@RequestBody ModelDTO modelDTO) {
+        return modelService.runSkinModel(modelDTO);
+    }
 }

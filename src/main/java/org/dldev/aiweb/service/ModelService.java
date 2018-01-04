@@ -5,4 +5,6 @@ import org.dldev.aiweb.DTO.ModelDTO;
 public interface ModelService {
 
     ModelDTO run(ModelDTO modelDTO);
+
+    ModelDTO runSkinModel(ModelDTO modelDTO);
 }
