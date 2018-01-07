@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dldev.aiweb.DTO.ModelDTO;
 import org.dldev.aiweb.DTO.ModelOperateBean;
+import org.dldev.aiweb.DTO.RunModelDTO;
 import org.dldev.aiweb.util.ModelProperties;
 import org.dldev.aiweb.util.UploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -90,7 +94,24 @@ public class ModelServiceImpl implements ModelService {
     public ModelDTO runSkinModel(ModelDTO modelDTO) {
         //String res=this.restTemplate.postForObject("http://127.0.0.1:8978/?pic_path=/data/gen_pic_data/img_05454.jpg", dto, String.class);
         try {
-            String res = this.restTemplate.getForObject(modelProperties.getSkinurl() + "?pic_path=" + Paths.get(uploadProperties.getLocation()).resolve(modelDTO.getInputFile()).toString() + "&version=1", String.class);
+            //old GET method
+            //String res = this.restTemplate.getForObject(modelProperties.getSkinurl() + "?pic_path=" + Paths.get(uploadProperties.getLocation()).resolve(modelDTO.getInputFile()).toString() + "&version=1", String.class);
+
+            RunModelDTO runModelDTO = new RunModelDTO();
+            runModelDTO.setType("skin");
+            runModelDTO.setVersion("1.0");
+            runModelDTO.setPic_path(Paths.get(uploadProperties.getLocation()).resolve(modelDTO.getInputFile()).toString());
+
+            HttpHeaders headers = new HttpHeaders();
+//            MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+//            headers.setContentType(type);
+//            headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+            headers.add("Accept", "application/json");
+            headers.add("Content-type", "application/json; charset=UTF-8");
+            HttpEntity<RunModelDTO> formEntity = new HttpEntity<RunModelDTO>(runModelDTO, headers);
+
+            String res = this.restTemplate.postForObject(modelProperties.getSkinurl(), formEntity, String.class);
+
             System.out.println(res);
             if (res == null || res.isEmpty()) {
                 modelDTO.setOutput(res);
@@ -103,6 +124,7 @@ public class ModelServiceImpl implements ModelService {
             modelDTO.setMessage("call skin model successfully.");
             return modelDTO;
         } catch (Exception e) {
+            //e.printStackTrace();
             modelDTO.setOutput("");
             modelDTO.setCode(2);
             modelDTO.setMessage("call skin model failed.");

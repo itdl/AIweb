@@ -7,7 +7,7 @@ upload:
 
 model:
   location: /data/web/json
-  skinurl: http://127.0.0.1:8979/
+  skinurl: http://localhost:10000/scoring/online/skin
 
 spring:
   http:
